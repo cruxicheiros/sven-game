@@ -8,7 +8,6 @@
     display: inline-block;
     text-align: left;
     width: 10em;
-    max-height: 95vh;
     font-family: 'Courier New', monospace;
     outline-color: black;
     outline-style: solid;
@@ -65,8 +64,9 @@
     color: white;
 }
 
-* {
+
+/** {
     outline-color: red;
     outline-style: dashed;
     outline-width: 1px;
-}
+}*/
