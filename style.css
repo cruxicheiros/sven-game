@@ -1,0 +1,72 @@
+#content {
+    padding: 2px 0;
+    text-align: center;
+    font-size: 5vw;
+}
+
+#game-container {
+    display: inline-block;
+    text-align: left;
+    width: 10em;
+    max-height: 95vh;
+    font-family: 'Courier New', monospace;
+    outline-color: black;
+    outline-style: solid;
+    outline-width: 2px;
+}
+
+#image-container img {
+    height: 6em;
+}
+
+#text-container {
+    padding-left: 0.1em;
+}
+
+#text-description {
+    line-height: 1.6em;
+    height: 4.8em;
+    /* 3x1.6 (line height) */
+    hyphens: 1;
+    font-size: 0.8em;
+}
+
+#text-title {
+    line-height: 1.6em;
+    margin-right: 3em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#controller button {
+    width: 50%;
+    margin: 0%;
+    float: left;
+    text-transform: uppercase;
+    line-height: 1.6em;
+    font-size: 1em;
+    font-family: 'Courier New', monospace;
+    outline-color: black;
+    outline-style: solid;
+    outline-width: 2px;
+    border-style: none;
+    background-color: white;
+}
+
+#controller button:hover {
+    background-color: black;
+    color: white;
+}
+
+#controller button:focus {
+    background-color: black;
+    color: white;
+}
+
+* {
+    outline-color: red;
+    outline-style: dashed;
+    outline-width: 1px;
+}
