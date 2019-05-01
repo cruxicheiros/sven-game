@@ -50,10 +50,10 @@ var View = function() {
         },
 
         updateButtons: function(buttonLabels) {
-            document.getElementById(this._BUTTON_0_ID) = buttonLabels[0];
-            document.getElementById(this._BUTTON_1_ID) = buttonLabels[1];
-            document.getElementById(this._BUTTON_2_ID) = buttonLabels[2];
-            document.getElementById(this._BUTTON_0_ID) = buttonLabels[3];
+            document.getElementById(this._BUTTON_0_ID).innerHTML = buttonLabels[0];
+            document.getElementById(this._BUTTON_1_ID).innerHTML = buttonLabels[1];
+            document.getElementById(this._BUTTON_2_ID).innerHTML = buttonLabels[2];
+            document.getElementById(this._BUTTON_0_ID).innerHTML = buttonLabels[3];
         }
     }
 }
