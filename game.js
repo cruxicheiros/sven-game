@@ -1,45 +1,95 @@
-var Model = function(view) {
+function game() {
+    var view = new View();
+    var model = new Model();
+    var controller = new Controller(model, view);
+    console.log(view._buttonElements);
+
+    view.addButtonsEventListener(controller.buttonPress);
+}
+
+var Controller = function(model, view) {
     return {
         _view: view,
+        _model: model,
 
-        _title: "Title",
-        _description: "Description",
-        _buttons: [
-            "Zero",
-            "One",
-            "Two",
-            "Three"
-        ],
+        setScene: function(title, description, buttons) {
+            this.setTitle(title);
+            this.setDescription(description);
+            this.setButtons(buttons);
+        },
 
-        setTitle: function (title) {
-            this._title = title;
+        setTitle: function(title) {
+            this._model.title = title;
             this._view.updateTitle(title);
         },
 
-        setDescription: function (description) {
-            this._description = description;
+        setDescription: function(description) {
+            this._model.description = description;
             this._view.updateDescription(description);
         },
 
-        setButtons: function (buttonLabels) {
-            if (buttonLabels.length != 4) {
-                throw new Error("The number of buttons needs to be 4. " + buttonLabels.toString() + " contains " + buttonLabels.length + ".");
-            }
-
-            this._buttons = buttonLabels;
-            this._view.updateButtons(buttonLabels)
+        setButtons: function(buttons) {
+            this._model.buttons = buttons;
+            this._view.updateButtons(buttons);
         }
     }
 }
 
-var View = function() {
+var Model = function() { //
+    return {
+        title: "Title",
+        description: "Description",
+        buttons: {
+            A: "A",
+            B: "B",
+            C: "C",
+            D: "D"
+        }
+    }
+}
+
+var View = function() { // Directly updates the interface
     return {
         _TITLE_ID: "text-title",
         _DESCRIPTION_ID: "text-description",
-        _BUTTON_0_ID: 'button-0',
-        _BUTTON_1_ID: 'button-1',
-        _BUTTON_2_ID: 'button-2',
-        _BUTTON_3_ID: 'button-3',        
+
+        _BUTTON_A_ID: 'button-A',
+        _BUTTON_B_ID: 'button-B',
+        _BUTTON_C_ID: 'button-C',
+        _BUTTON_D_ID: 'button-D',
+
+        _buttonElements = {
+            A: document.getElementById(_BUTTON_A_ID),
+            B: document.getElementById(_BUTTON_B_ID),
+            C: document.getElementById(_BUTTON_C_ID),
+            D: document.getElementById(_BUTTON_D_ID)
+        },
+
+        addButtonClickCallback: function(callback) {
+            this._buttonClickCallback = callback;
+
+            _buttonElements.A.addEventListener('click', this._interceptButtonClickEvent);
+            _buttonElements.B.addEventListener('click', this._interceptButtonClickEvent);
+            _buttonElements.C.addEventListener('click', this._interceptButtonClickEvent);
+            _buttonElements.D.addEventListener('click', this._interceptButtonClikcEvent);
+        },
+
+        _interceptButtonClickEvent: function(event) {
+            var buttonElementId = event.target.id;
+            var buttonCode = "";
+
+            if (buttonElementId === this._BUTTON_A_ID) { //TODO replace with nicer code
+                buttonCode = "A";
+            } else if (buttonElementId === this._BUTTON_B_ID) {
+                buttonCode = "B";
+            } else if (buttonElementId === this._BUTTON_C_ID) {
+                buttonCode = "C";
+            } else if (buttonElementId === this._BUTTON_D_ID) {
+                buttonCode = "D";
+            }
+
+            this._buttonClickCallback(buttonCode);
+        },
 
         updateTitle: function(title) {
             document.getElementById(this._TITLE_ID).innerHTML = title;
@@ -50,10 +100,10 @@ var View = function() {
         },
 
         updateButtons: function(buttonLabels) {
-            document.getElementById(this._BUTTON_0_ID).innerHTML = buttonLabels[0];
-            document.getElementById(this._BUTTON_1_ID).innerHTML = buttonLabels[1];
-            document.getElementById(this._BUTTON_2_ID).innerHTML = buttonLabels[2];
-            document.getElementById(this._BUTTON_0_ID).innerHTML = buttonLabels[3];
+            this._buttonElements.A.innerHTML = buttonLabels.A;
+            this._buttonElements.B.innerHTML = buttonLabels.B;
+            this._buttonElements.C.innerHTML = buttonLabels.C;
+            this._buttonElements.D.innerHTML = buttonLabels.D;
         }
     }
 }
