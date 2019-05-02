@@ -1,16 +1,34 @@
 function game() {
-    var view = new View();
     var model = new Model();
-    var controller = new Controller(model, view);
-    console.log(view._buttonElements);
 
-    view.addButtonsEventListener(controller.buttonPress);
+    var views = {
+        button: new ButtonView(),
+        title: new TitleView(),
+        description: new DescriptionView()
+    }
+
+    var controller = new Controller(model, views);
+
+    controller.initializeGame();
 }
 
-var Controller = function(model, view) {
+var Controller = function(model, views) {
     return {
-        _view: view,
         _model: model,
+        _views: views,
+
+        initializeGame: function() {
+            this.setTitle("Anger!")
+            this.setDescription("You are testing a game.");
+            this.setButtons({
+                "A": "Bork",
+                "B": "Bork",
+                "C": "Bork",
+                "D": "Bork"
+            });
+
+            this._views["button"].addButtonClickCallback(this.buttonClickListener);
+        },
 
         setScene: function(title, description, buttons) {
             this.setTitle(title);
@@ -20,17 +38,21 @@ var Controller = function(model, view) {
 
         setTitle: function(title) {
             this._model.title = title;
-            this._view.updateTitle(title);
+            this._views['title'].setTitle(title);
         },
 
         setDescription: function(description) {
             this._model.description = description;
-            this._view.updateDescription(description);
+            this._views['description'].setDescription(description);
         },
 
         setButtons: function(buttons) {
             this._model.buttons = buttons;
-            this._view.updateButtons(buttons);
+            this._views['button'].setButtonLabels(buttons);
+        },
+
+        buttonClickListener: function(buttonCode) {
+            console.log(buttonCode);
         }
     }
 }
@@ -48,37 +70,52 @@ var Model = function() { //
     }
 }
 
-var View = function() { // Directly updates the interface
+// Views: Directly update the interface.
+
+var TitleView = function() {
     return {
         _TITLE_ID: "text-title",
+
+        setTitle: function(title) {
+            document.getElementById(this._TITLE_ID).innerHTML = title;
+        }
+    }
+}
+
+var DescriptionView = function() {
+    return {
         _DESCRIPTION_ID: "text-description",
 
+        setDescription: function(description) {
+            document.getElementById(this._DESCRIPTION_ID).innerHTML = description;
+        }
+    }
+}
+
+var ButtonView = function() {
+    return {
         _BUTTON_A_ID: 'button-A',
         _BUTTON_B_ID: 'button-B',
         _BUTTON_C_ID: 'button-C',
         _BUTTON_D_ID: 'button-D',
 
-        _buttonElements = {
-            A: document.getElementById(_BUTTON_A_ID),
-            B: document.getElementById(_BUTTON_B_ID),
-            C: document.getElementById(_BUTTON_C_ID),
-            D: document.getElementById(_BUTTON_D_ID)
-        },
 
         addButtonClickCallback: function(callback) {
             this._buttonClickCallback = callback;
+            boundInterceptor = this._interceptButtonClickEvent.bind(this); // Otherwise the listeners get bound to their elements and lose context
 
-            _buttonElements.A.addEventListener('click', this._interceptButtonClickEvent);
-            _buttonElements.B.addEventListener('click', this._interceptButtonClickEvent);
-            _buttonElements.C.addEventListener('click', this._interceptButtonClickEvent);
-            _buttonElements.D.addEventListener('click', this._interceptButtonClikcEvent);
+
+            document.getElementById(this._BUTTON_A_ID).addEventListener('click', boundInterceptor);
+            document.getElementById(this._BUTTON_B_ID).addEventListener('click', boundInterceptor);
+            document.getElementById(this._BUTTON_C_ID).addEventListener('click', boundInterceptor);
+            document.getElementById(this._BUTTON_D_ID).addEventListener('click', boundInterceptor);
         },
 
         _interceptButtonClickEvent: function(event) {
             var buttonElementId = event.target.id;
             var buttonCode = "";
 
-            if (buttonElementId === this._BUTTON_A_ID) { //TODO replace with nicer code
+            if (buttonElementId === this._BUTTON_A_ID) {
                 buttonCode = "A";
             } else if (buttonElementId === this._BUTTON_B_ID) {
                 buttonCode = "B";
@@ -91,19 +128,11 @@ var View = function() { // Directly updates the interface
             this._buttonClickCallback(buttonCode);
         },
 
-        updateTitle: function(title) {
-            document.getElementById(this._TITLE_ID).innerHTML = title;
-        },
-
-        updateDescription: function(description) {
-            document.getElementById(this._DESCRIPTION_ID).innerHTML = description;
-        },
-
-        updateButtons: function(buttonLabels) {
-            this._buttonElements.A.innerHTML = buttonLabels.A;
-            this._buttonElements.B.innerHTML = buttonLabels.B;
-            this._buttonElements.C.innerHTML = buttonLabels.C;
-            this._buttonElements.D.innerHTML = buttonLabels.D;
+        setButtonLabels: function(buttonLabels) {
+            document.getElementById(this._BUTTON_A_ID).innerHTML = buttonLabels.A;
+            document.getElementById(this._BUTTON_B_ID).innerHTML = buttonLabels.B;
+            document.getElementById(this._BUTTON_C_ID).innerHTML = buttonLabels.C;
+            document.getElementById(this._BUTTON_D_ID).innerHTML = buttonLabels.D;
         }
     }
 }
