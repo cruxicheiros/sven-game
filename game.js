@@ -12,16 +12,20 @@ function game() {
     presenter.initializeGame();
 }
 
-var Model = function() { //
+
+var Model = function() {
     return {
-        title: "Title",
-        description: "Description",
-        buttons: {
-            A: "A",
-            B: "B",
-            C: "C",
-            D: "D"
-        }
+        state: {
+            title: "Title",
+            description: "Description",
+            buttons: {
+                A: "A",
+                B: "B",
+                C: "C",
+                D: "D"
+            }
+        },
+
     }
 }
 
@@ -58,7 +62,7 @@ var Presenter = function(model, views) {
         },
 
         setDescription: function(description) {
-            this._model.description = description; 
+            this._model.description = description;
             this._views['description'].setDescription(description);
         },
 

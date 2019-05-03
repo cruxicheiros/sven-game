@@ -1,0 +1,28 @@
+{
+    "minigames": [{
+        "name": "Doctor Sven",
+        "rounds": [{
+            "name": "Prescribe",
+            "repeat": 0,
+            "scenes": [{
+                "title": "Prescribe!",
+                "description": {
+                    "type": "random",
+                    "text": [
+                        ["", "Doctor!", "Dr. Sven!", "My dude.", "Help me!", "AAAAARGH!", "Man!"],
+                        ["My nose", "My leg", "My entire body", "My face", "My dog", "My chin", "My teeth"],
+                        ["won't", "might", "will", "can't", "doesn't", "should"],
+                        ["fall off", "stop hurting", "grow hair", "sweat", "exist"],
+                        ["!", "!!!", "?!", "...", ".", "!11!1"]
+                    ]
+                },
+                "choices": {
+                    "type": "random",
+                    "selection": [
+                        "Sleep", "Sven", "Sven", "Feed", "Sven", "Pat"
+                    ]
+                }
+            }]
+        }]
+    }]
+}
