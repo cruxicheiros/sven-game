@@ -7,12 +7,25 @@ function game() {
         description: new DescriptionView()
     }
 
-    var controller = new Controller(model, views);
+    var presenter = new Presenter(model, views);
 
-    controller.initializeGame();
+    presenter.initializeGame();
 }
 
-var Controller = function(model, views) {
+var Model = function() { //
+    return {
+        title: "Title",
+        description: "Description",
+        buttons: {
+            A: "A",
+            B: "B",
+            C: "C",
+            D: "D"
+        }
+    }
+}
+
+var Presenter = function(model, views) {
     return {
         _model: model,
         _views: views,
@@ -36,13 +49,16 @@ var Controller = function(model, views) {
             this.setButtons(buttons);
         },
 
+        // TODO this stuff is just generally wrong.
+        // The model should be supplying the data to set the title with, etc.
+
         setTitle: function(title) {
             this._model.title = title;
             this._views['title'].setTitle(title);
         },
 
         setDescription: function(description) {
-            this._model.description = description;
+            this._model.description = description; 
             this._views['description'].setDescription(description);
         },
 
@@ -53,19 +69,6 @@ var Controller = function(model, views) {
 
         buttonClickListener: function(buttonCode) {
             console.log(buttonCode);
-        }
-    }
-}
-
-var Model = function() { //
-    return {
-        title: "Title",
-        description: "Description",
-        buttons: {
-            A: "A",
-            B: "B",
-            C: "C",
-            D: "D"
         }
     }
 }
