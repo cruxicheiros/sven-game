@@ -1,28 +1,57 @@
 {
-    "minigames": [{
+    "stages": [{
         "name": "Doctor Sven",
         "rounds": [{
-            "name": "Prescribe",
-            "repeat": 0,
-            "scenes": [{
-                "title": "Prescribe!",
-                "description": {
-                    "type": "random",
-                    "text": [
-                        ["", "Doctor!", "Dr. Sven!", "My dude.", "Help me!", "AAAAARGH!", "Man!"],
-                        ["My nose", "My leg", "My entire body", "My face", "My dog", "My chin", "My teeth"],
-                        ["won't", "might", "will", "can't", "doesn't", "should"],
-                        ["fall off", "stop hurting", "grow hair", "sweat", "exist"],
-                        ["!", "!!!", "?!", "...", ".", "!11!1"]
-                    ]
-                },
-                "choices": {
-                    "type": "random",
-                    "selection": [
-                        "Sleep", "Sven", "Sven", "Feed", "Sven", "Pat"
-                    ]
-                }
-            }]
-        }]
+                "name": "Intro",
+                "scenes": [{
+                        "title": "Doctor:",
+                        "description": "\"Dr. Sven! Thank goodness you're here!\"",
+                        "choices": {
+                            "A": "Bork",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    },
+                    {
+                        "title": "Doctor:",
+                        "description": "\"Excellent. Patients will start coming through...\"",
+                        "choices": {
+                            "A": "Start",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Prescribe",
+                "scenes": [{
+                        "title": "Prescribe!",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["", "Doctor!", "Dr. Sven!", "My dude.", "Help me!", "AAAAARGH!", "Man!"],
+                                ["My nose", "My leg", "My entire body", "My face", "My dog", "My chin", "My teeth"],
+                                ["won't", "might", "will", "can't", "doesn't", "should"],
+                                ["fall off", "stop hurting", "grow hair", "sweat", "exist"],
+                                ["!", "!!!", "?!", "...", ".", "!11!1"]
+                            ]
+                        },
+                        "choices": {
+                            "type": "random",
+                            "selection": [
+                                "Sven", "Burger", "Pat", "Walk", "Dogs", "Borking"
+                            ]
+                        }
+                    },
+                    {
+                        "title": "Disappointment...",
+                        "description": "The pharmacist wouldn't dispense [LAST_CHOICE]..."
+                    }
+                ]
+            }
+        ]
     }]
 }
