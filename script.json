@@ -5,22 +5,34 @@
                 "name": "Intro",
                 "scenes": [{
                         "title": "Doctor:",
-                        "description": "\"Dr. Sven! Thank goodness you're here!\"",
+                        "description": {
+                            "type": "static",
+                            "text": "\"Dr. Sven! Thank goodness you're here!\"",
+                        },
                         "choices": {
-                            "A": "Bork",
-                            "B": null,
-                            "C": null,
-                            "D": null
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
                         }
                     },
                     {
                         "title": "Doctor:",
-                        "description": "\"Excellent. Patients will start coming through...\"",
+                        "description": {
+                            "type": "static",
+                            "text": "\"Excellent. Patients will start coming through...\"",
+                        },
                         "choices": {
-                            "A": "Start",
-                            "B": null,
-                            "C": null,
-                            "D": null
+                            "type": "static",
+                            "selection": {
+                                "A": "Start",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
                         }
                     }
                 ]

@@ -64,6 +64,11 @@
     color: white;
 }
 
+#controller button:disabled {
+    background-color: white;
+    color: lightgray;
+}
+
 
 /** {
     outline-color: red;
