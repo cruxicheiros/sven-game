@@ -221,73 +221,56 @@ var DescriptionView = function() {
     }
 }
 
+var Button = function(code, htmlId) {
+    return {
+        code: code,
+        htmlId: htmlId,
+        htmlElement: document.getElementById(htmlId)
+    }
+}
+
 var ButtonView = function() {
     return {
-        _BUTTON_A_ID: 'button-A',
-        _BUTTON_B_ID: 'button-B',
-        _BUTTON_C_ID: 'button-C',
-        _BUTTON_D_ID: 'button-D',
-
         _BUTTON_DISABLED_TEXT: "-",
+        
+        _buttons: [
+            new Button('A', 'button-A'),
+            new Button('B', 'button-B'),
+            new Button('C', 'button-C'),
+            new Button('D', 'button-D'),
+        ],
 
         addButtonClickCallback: function(callback) {
             this._buttonClickCallback = callback;
-            boundInterceptor = this._interceptButtonClickEvent.bind(this); // Otherwise the listeners get bound to their elements and lose context
+            var boundInterceptor = this._interceptButtonClickEvent.bind(this); // Otherwise the listeners get bound to their elements and lose context
 
-            document.getElementById(this._BUTTON_A_ID).addEventListener('click', boundInterceptor);
-            document.getElementById(this._BUTTON_B_ID).addEventListener('click', boundInterceptor);
-            document.getElementById(this._BUTTON_C_ID).addEventListener('click', boundInterceptor);
-            document.getElementById(this._BUTTON_D_ID).addEventListener('click', boundInterceptor);
+            for (i = 0; i < this._buttons.length; i++) {
+                this._buttons[i].htmlElement.addEventListener('click', boundInterceptor);
+            }
         },
 
         _interceptButtonClickEvent: function(event) {
             var buttonElementId = event.target.id;
-            var buttonCode = "";
 
-            if (buttonElementId === this._BUTTON_A_ID) {
-                buttonCode = "A";
-            } else if (buttonElementId === this._BUTTON_B_ID) {
-                buttonCode = "B";
-            } else if (buttonElementId === this._BUTTON_C_ID) {
-                buttonCode = "C";
-            } else if (buttonElementId === this._BUTTON_D_ID) {
-                buttonCode = "D";
+            for (i = 0; i < this._buttons.length; i++) {
+                if (buttonElementId === this._buttons[i].htmlId) {
+                    this._buttonClickCallback(this._buttons[i].code);
+                    return;
+                }
             }
-
-            this._buttonClickCallback(buttonCode);
         },
 
         setButtonLabels: function(buttonLabels) {
-            if (buttonLabels.A) {
-                document.getElementById(this._BUTTON_A_ID).innerHTML = buttonLabels.A;
-                document.getElementById(this._BUTTON_A_ID).disabled = false;
-            } else {
-                document.getElementById(this._BUTTON_A_ID).innerHTML = this._BUTTON_DISABLED_TEXT;
-                document.getElementById(this._BUTTON_A_ID).disabled = true;
-            }
-
-            if (buttonLabels.B) {
-                document.getElementById(this._BUTTON_B_ID).innerHTML = buttonLabels.B;
-                document.getElementById(this._BUTTON_B_ID).disabled = false;
-            } else {
-                document.getElementById(this._BUTTON_B_ID).innerHTML = this._BUTTON_DISABLED_TEXT;
-                document.getElementById(this._BUTTON_B_ID).disabled = true;
-            }
-
-            if (buttonLabels.C) {
-                document.getElementById(this._BUTTON_C_ID).innerHTML = buttonLabels.C;
-                document.getElementById(this._BUTTON_C_ID).disabled = false;
-            } else {
-                document.getElementById(this._BUTTON_C_ID).innerHTML = this._BUTTON_DISABLED_TEXT;
-                document.getElementById(this._BUTTON_C_ID).disabled = true;
-            }
-
-            if (buttonLabels.D) {
-                document.getElementById(this._BUTTON_D_ID).innerHTML = buttonLabels.D;
-                document.getElementById(this._BUTTON_D_ID).disabled = false;
-            } else {
-                document.getElementById(this._BUTTON_D_ID).innerHTML = this._BUTTON_DISABLED_TEXT;
-                document.getElementById(this._BUTTON_D_ID).disabled = true;
+            for (i = 0; i < this._buttons.length; i++) {
+                var button = this._buttons[i];
+                
+                if (buttonLabels[button.code]) {
+                    button.htmlElement.innerHTML = buttonLabels[button.code];
+                    button.htmlElement.disabled = false;
+                } else {
+                    button.htmlElement.innerHTML = this._BUTTON_DISABLED_TEXT;
+                    button.htmlElement.disabled = true;
+                }
             }
         }
     }
