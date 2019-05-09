@@ -72,7 +72,6 @@ var Model = function(script) {
             return this._script.stages[this._state.stage].rounds[this._state.round].scenes[this._state.scene];
         },
 
-
         _renderTitle() {
             this._state.title = this._getSceneData()["title"];
         },
@@ -116,18 +115,18 @@ var Model = function(script) {
             }
 
             if (choices.type == "random") {
-                var buttonCodes = ["A", "B", "C", "D"];
+                var choiceCodes = ["A", "B", "C", "D"];
                 var randomizedChoices = {};
                 var selectedIndexes = [];
 
-                for (i = 0; i < buttonCodes.length; i++) {
+                for (i = 0; i < choiceCodes.length; i++) {
                     var index = Math.floor(Math.random() * choices.selection.length);
 
                     while (selectedIndexes.includes(index)) {
                         index = Math.floor(Math.random() * choices.selection.length);
                     }
 
-                    randomizedChoices[buttonCodes[i]] = choices.selection[index];
+                    randomizedChoices[choiceCodes[i]] = choices.selection[index];
                     selectedIndexes.push(index);
                 }
 
@@ -340,17 +339,17 @@ var gameScript = {
                         "description": {
                             "type": "random",
                             "text": [
-                                ["", "Doctor!", "Dr. Sven!", "My dude.", "Help me!", "AAAAARGH!", "Man!"],
-                                ["My nose", "My leg", "My entire body", "My face", "My dog", "My chin", "My teeth"],
-                                ["won't", "can't", "should"],
-                                ["fall off", "stop hurting", "grow hair", "sweat", "exist"],
-                                ["..."]
+                                ["Doctor! My"],
+                                ["", "aunt's", "friend's", "uncle's"], 
+                                ["entire body", "giant wound", "toenail", "armpit", "elbow"],
+                                ["is going to"],
+                                ["fall off!"]
                             ]
                         },
                         "choices": {
                             "type": "random",
                             "selection": [
-                                "Sven", "Burger", "Pat", "Walk", "Dogs", "Borking"
+                                "Burgers", "Cheese", "Egg", "Bread", "Carrot", "Kibble", "Peas", "Peanuts"
                             ]
                         }
                     },
@@ -358,12 +357,45 @@ var gameScript = {
                         "title": "Disappoint!",
                         "description": {
                             "type": "static",
-                            "text": "The pharmacist wouldn't dispense a [LAST_CHOICE]..."
+                            "text": "The pharmacist wouldn't dispense [LAST_CHOICE]."
                         },
                         "choices": {
                             "type": "static",
                             "selection": {
-                                "A": "SAD",
+                                "A": "Sad",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Prescribe!",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["Help! Help! My"],
+                                ["teeth", "hairs", "legs", "arms", "spine bones"],
+                                ["grow hair!", "sweat!", "rotate!", "went green!"]
+                            ]
+                        },
+                        "choices": {
+                            "type": "random",
+                            "selection": [
+                                "Pat", "Walk", "Bork", "Run", "Nap", "Wag"
+                            ]
+                        }
+                    },
+                    {
+                        "title": "Disappoint!",
+                        "description": {
+                            "type": "static",
+                            "text": "The pharmacist wouldn't dispense a [LAST_CHOICE]."
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Sad",
                                 "B": null,
                                 "C": null,
                                 "D": null
