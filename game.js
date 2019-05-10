@@ -374,7 +374,7 @@ var gameScript = {
                         "title": "Moving!",
                         "description": {
                             "type": "static",
-                            "text": "You get on the bus! The next stop is the hospital."
+                            "text": "You get on the bus! The next stop is the *hospital*."
                         },
                         "choices": {
                             "type": "static",
@@ -1007,7 +1007,7 @@ var gameScript = {
                     "title": "Moving!",
                     "description": {
                         "type": "static",
-                        "text": "You get on the bus again! The next stop is a restaurant."
+                        "text": "You get on the bus again! The next stop is a *restaurant*."
                     },
                     "choices": {
                         "type": "static",
@@ -1290,7 +1290,7 @@ var gameScript = {
                     "title": "Moving!",
                     "description": {
                         "type": "static",
-                        "text": "You get on the bus again! The next stop is the court."
+                        "text": "You get on the bus again! The next stop is the *court*."
                     },
                     "choices": {
                         "type": "static",
@@ -1611,7 +1611,7 @@ var gameScript = {
                     "title": "Moving!",
                     "description": {
                         "type": "static",
-                        "text": "You get on the bus again! The next stop is your home again."
+                        "text": "You get on the bus again! The next stop is your *home*."
                     },
                     "choices": {
                         "type": "static",
@@ -1691,12 +1691,12 @@ var gameScript = {
                     "title": "Person:",
                     "description": {
                         "type": "static",
-                        "text": "Well, at least it looks like you didn't get up to much..."
+                        "text": "At least you didn't get up to much..."
                     },
                     "choices": {
                         "type": "static",
                         "selection": {
-                            "A": "End",
+                            "A": "Menu",
                             "B": null,
                             "C": null,
                             "D": null
