@@ -30,11 +30,14 @@
     font-size: 0.8em;
 }
 
+.caps {
+    text-transform: uppercase;
+}
+
 #text-title {
     line-height: 1.6em;
     margin-right: 3em;
     font-weight: bold;
-    text-transform: uppercase;
     border-right: 1px solid black;
     border-bottom: 1px solid black;
 }
@@ -43,7 +46,6 @@
     width: 50%;
     margin: 0%;
     float: left;
-    text-transform: uppercase;
     line-height: 1.6em;
     font-size: 1em;
     font-family: 'Courier New', monospace;

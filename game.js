@@ -21,7 +21,7 @@ var Model = function(script) {
             round: 0,
             scene: 0,
 
-            lastChoice: null,
+            lastChoice: "",
 
             title: null,
             description: null,
@@ -49,7 +49,7 @@ var Model = function(script) {
             return this._state.choices;
         },
 
-        _incrementScene() {
+        _incrementScene: function() {
             var maxStageIndex = this._script.stages.length - 1;
             var maxStageRoundIndex = this._script.stages[this._state.stage].rounds.length - 1;
             var maxRoundSceneIndex = this._script.stages[this._state.stage].rounds[this._state.round].scenes.length - 1;
@@ -65,22 +65,26 @@ var Model = function(script) {
                 this._state.stage++;
             } else {
                 console.log("Hit end of script. Game end.");
+                this._state.scene = 0;
+                this._state.round = 0;
+                this._state.stage = 0;
             }
         },
 
-        _getSceneData() {
+        _getSceneData: function() {
             return this._script.stages[this._state.stage].rounds[this._state.round].scenes[this._state.scene];
         },
 
-        _renderTitle() {
+        _renderTitle: function() {
             this._state.title = this._getSceneData()["title"];
         },
 
-        _renderDescription() {
+        _renderDescription: function() {
             var description = this._getSceneData()["description"];
+            var lastChoice = "*" + this.getLastChoice() + "*"
 
             if (description.type == "static") {
-                this._state.description = description.text.replace("[LAST_CHOICE]", this.getLastChoice());
+                this._state.description = description.text.replace("[LAST_CHOICE]", lastChoice);
                 return;
             }
 
@@ -95,14 +99,14 @@ var Model = function(script) {
                     renderedDescription = renderedDescription + " " + segment;
                 }
 
-                this._state.description = renderedDescription.replace("[LAST_CHOICE]", this.getLastChoice());
+                this._state.description = renderedDescription.replace("[LAST_CHOICE]", lastChoice);
                 return;
             }
 
             throw new Error("Invalid description type " + description.type + " at text '" + description.text + "'");
         },
 
-        _renderChoices() {
+        _renderChoices: function() {
             var choices = this._getSceneData()["choices"];
 
             if (choices.type == "static") {
@@ -137,7 +141,7 @@ var Model = function(script) {
             throw new Error("Invalid choice type " + choices.type);
         },
 
-        _setLastChoice(choice) {
+        _setLastChoice: function(choice) {
             var choiceText = this._state.choices[choice];
             this._state.lastChoice = choiceText;
         },
@@ -214,7 +218,14 @@ var DescriptionView = function() {
     return {
         _DESCRIPTION_ID: "text-description",
 
+        _capsRegex: /(\*)(.*?)\1/g,
+
+        _capsReplacer: function(fullMatch, tagStart, tagContents){
+            return '<span class="caps">'+ tagContents + '</span>';
+        },
+
         setDescription: function(description) {
+            description = description.replace(this._capsRegex, this._capsReplacer)
             document.getElementById(this._DESCRIPTION_ID).innerHTML = description;
         }
     }
@@ -278,20 +289,46 @@ var ButtonView = function() {
 /* Script JSON */
 
 var gameScript = {
-    "stages": [{
-        "name": "Doctor Sven",
-        "rounds": [{
-                "name": "Intro",
-                "scenes": [{
-                        "title": "Doctor:",
+    "stages": [
+        {
+            "name": "Menu",
+            "rounds": [
+                {
+                    "name": "Menu",
+                    "scenes": [{
+                        "title": "Start!",
                         "description": {
                             "type": "static",
-                            "text": "\"Dr. Sven! We have so many patients!\"",
+                            "text": "Welcome to *Adsventure Game!*"
                         },
                         "choices": {
                             "type": "static",
                             "selection": {
-                                "A": "Bork",
+                                "A": "Start",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    }]
+                }
+            ]
+        },
+        {
+            "name": "Cutscene 1",
+            "rounds": [
+                {
+                    "name": "Home",
+                    "scenes": [{
+                        "title": "Sleepy...",
+                        "description": {
+                            "type": "static",
+                            "text": "You just woke up. But nobody is in the house!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Check",
                                 "B": null,
                                 "C": null,
                                 "D": null
@@ -299,18 +336,108 @@ var gameScript = {
                         }
                     },
                     {
+                        "title": "Confused!",
+                        "description": {
+                            "type": "static",
+                            "text": "And the door is open!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Leave",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Slam!",
+                        "description": {
+                            "type": "static",
+                            "text": "The door shuts behind you! But you see a bus..."
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bus",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    }]
+                },
+                {
+                    "name": "Bus",
+                    "scenes": [{
+                        "title": "Moving!",
+                        "description": {
+                            "type": "static",
+                            "text": "You get on the bus! The next stop is the hospital."
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Ride",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Ejection!",
+                        "description": {
+                            "type": "static",
+                            "text": "The driver doesn't accept dog dollars!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    }
+                ]}
+            ]
+        },
+        {
+            "name": "Hospital",
+            "rounds": [{
+                "name": "Intro",
+                "scenes": [{
                         "title": "Doctor:",
                         "description": {
                             "type": "static",
-                            "text": "\"Here, take these ones!\"",
+                            "text": "Dr. Sven! We have so many patients!",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Doctor:",
+                        "description": {
+                            "type": "static",
+                            "text": "Here, take these ones!",
                         },
                         "choices": {
                             "type": "static",
                             "selection": {
                                 "A": "Bork...",
-                                "B": null,
-                                "C": null,
-                                "D": null
+                                "B": "Wag...",
+                                "C": "Push...",
+                                "D": "Smell..."
                             }
                         }
                     },
@@ -357,12 +484,12 @@ var gameScript = {
                         "title": "Disappoint!",
                         "description": {
                             "type": "static",
-                            "text": "The pharmacist wouldn't dispense [LAST_CHOICE]."
+                            "text": "The pharmacist wouldn't dispense [LAST_CHOICE]..."
                         },
                         "choices": {
                             "type": "static",
                             "selection": {
-                                "A": "Sad",
+                                "A": "Next",
                                 "B": null,
                                 "C": null,
                                 "D": null
@@ -387,15 +514,845 @@ var gameScript = {
                         }
                     },
                     {
-                        "title": "Disappoint!",
+                        "title": "Doctor:",
                         "description": {
-                            "type": "static",
-                            "text": "The pharmacist wouldn't dispense a [LAST_CHOICE]."
+                            "type": "random",
+                            "text": [
+                                ["Umm... It looks like you prescribed"],
+                                ["20mg", "500mg", "23mg", "12mg", "3000mg"],
+                                ["of [LAST_CHOICE]..."]
+                            ]
                         },
                         "choices": {
                             "type": "static",
                             "selection": {
-                                "A": "Sad",
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Doctor:",
+                        "description": {
+                            "type": "static",
+                            "text": "The pharmacist is complaining about your handwriting!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Doctor:",
+                        "description": {
+                            "type": "static",
+                            "text": "Okay... but you can't do that! Don't do it again!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Prescribe!",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["Noooo!! Look at my"],
+                                ["toes!", "fingers!", "eyeballs!", "lungs!", "shoulders!"],
+                                ["You have to do something!"]
+                            ]
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork!!",
+                                "B": "Wag!!",
+                                "C": "Push!!",
+                                "D": "Smell!!"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Pharmacist:",
+                        "description": {
+                            "type": "static",
+                            "text": "[LAST_CHOICE]?! This is ridiculous!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Pharmacist:",
+                        "description": {
+                            "type": "static",
+                            "text": "I've come to find out what's going on for myself!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork...",
+                                "B": "Wag!",
+                                "C": "Push.",
+                                "D": "Smell?"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Defend!",
+                        "description": {
+                            "type": "static",
+                            "text": "The pharmacist has accused you of being a dog!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork!",
+                                "B": "Wag!",
+                                "C": "Push!",
+                                "D": "Smell!"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Success!",
+                        "description": {
+                            "type": "static",
+                            "text": "[LAST_CHOICE] A successful defense!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Doctor:",
+                        "description": {
+                            "type": "static",
+                            "text": "Wait! Dr. Sven! We need you in surgery!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Surgery Intro",
+                "scenes": [{
+                        "title": "Surgery!",
+                        "description": {
+                            "type": "static",
+                            "text": "You [LAST_CHOICE] into the operating theatre!",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Surgeon:",
+                        "description": {
+                            "type": "static",
+                            "text": "Dr. Sven! Can you assist me?",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Start",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                ]
+            },
+            {
+                "name": "Surgery Game",
+                "scenes": [
+                    {
+                        "title": "Surgeon:",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["Can you help me remove the"],
+                                ["lizard", "anvil", "kettle", "fork", "chair"],
+                                ["from the"],
+                                ["brain?", "knee?", "elbow?", "nose?", "stomach?"]
+                            ],
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Action!",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["You [LAST_CHOICE]"],
+                                ["convincingly!", "reassuringly!", "smellily...", "weirdly.", "oddly!"]
+                            ],
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Safe!",
+                        "description": {
+                            "type": "static",
+                            "text": "The surgeon is still satisfied that you are not a dog.",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Surgeon:",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["First, pass me the"],
+                                ["sharp thing!", "spanner!", "hammer!", "bone saw!", "bread knife!"]
+                            ],
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Action!",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["You [LAST_CHOICE]"],
+                                ["at the surgeon!", "at the patient.", "in time with the beeping things!"]
+                            ],
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Danger!",
+                        "description": {
+                            "type": "static",
+                            "text": "The surgeon is beginning to have suspicions!",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Surgeon:",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["We need to replace their"],
+                                ["bones", "fingers", "toes", "skin", "blood"],
+                                ["with"],
+                                ["bones!", "fingers!", "toes!", "skin!", "blood!"]
+                            ]
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Action!",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["You [LAST_CHOICE]"],
+                                ["to yourself.", "at nothing.", "to help you think."]
+                            ],
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Suspicion!",
+                        "description": {
+                            "type": "static",
+                            "text": "The surgeon...",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Safe!",
+                        "description": {
+                            "type": "static",
+                            "text": "The surgeon second-guesses themself.",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Surgeon:",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["\Quick! Use the"],
+                                ["blood!", "oxygen!", "fire!", "electricity!"]
+                            ]
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Action!",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["You [LAST_CHOICE]"],
+                                ["and it solves the problem!", "and it does absolutely nothing!", "and the patient stands up on the table!"]
+                            ],
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                ]
+            },
+            {
+                "name": "Surgery Outro",
+                "scenes": [{
+                        "title": "Defend!",
+                        "description": {
+                            "type": "static",
+                            "text": "The surgeon has accused you of being a dog!",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork!",
+                                "B": "Wag!",
+                                "C": "Push!",
+                                "D": "Smell!"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Fail!",
+                        "description": {
+                            "type": "static",
+                            "text": "You [LAST_CHOICE] The defense fails!",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Rejection!",
+                        "description": {
+                            "type": "static",
+                            "text": "The surgeon is calling security!",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Oh no",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Ejection!",
+                        "description": {
+                            "type": "static",
+                            "text": "You were kicked out of the hospital!",
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bus",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                ]
+            },
+        ]
+    },
+    {
+        "name": "Cutscene 2",
+        "rounds": [
+            {
+                "name": "Bus",
+                "scenes": [{
+                    "title": "Moving!",
+                    "description": {
+                        "type": "static",
+                        "text": "You get on the bus again! The next stop is a restaurant."
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Ride",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                },
+                {
+                    "title": "Ejection!",
+                    "description": {
+                        "type": "static",
+                        "text": "The driver noticed you were a dog!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Next",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                }
+            ]}
+        ]
+    },
+    {
+        "name": "Restaurant",
+        "rounds": [{
+            "name": "Restaurant Intro",
+            "scenes": [
+                {
+                    "title": "Manager:",
+                    "description": {
+                        "type": "static",
+                        "text": "Chef Sven! Where have you been?"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Bork",
+                            "B": "Wag",
+                            "C": "Push",
+                            "D": "Smell"
+                        }
+                    }
+                },
+                {
+                    "title": "Manager:",
+                    "description": {
+                        "type": "static",
+                        "text": "I don't care about [LAST_CHOICE]! There are customers waiting!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Bork...",
+                            "B": "Wag...",
+                            "C": "Push...",
+                            "D": "Smell..."
+                        }
+                    }
+                },
+                {
+                    "title": "Manager:",
+                    "description": {
+                        "type": "static",
+                        "text": "Here's your first order. Go!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Start",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Cooking Game",
+            "scenes": [
+                {
+                    "title": "Cook!",
+                    "description": {
+                        "type": "random",
+                        "text": [
+                            ["The order says..."],
+                            ["*hamburger!*", "*salad!*", "*chips!*", "*pizza!*", "*cake!*"],
+                            ["How will you cook it?"]
+                        ]
+                    },
+                    "choices": {
+                        "type": "random",
+                        "selection": [
+                            "Boil",
+                            "Poach",
+                            "Fry",
+                            "Bake",
+                            "Broil",
+                            "Toast",
+                            "BBQ",
+                            "Burn",
+                            "Steam"
+                        ]
+                    }
+                },
+                {
+                    "title": "Cook!",
+                    "description": {
+                        "type": "static",
+                        "text": "Throw in some..."
+                    },
+                    "choices": {
+                        "type": "random",
+                        "selection": [
+                            "Egg",
+                            "Flour",
+                            "Milk",
+                            "Cheese",
+                            "Yeast",
+                            "Carrot",
+                            "Tomato"
+                        ]
+                    }
+                },
+                {
+                    "title": "Cook!",
+                    "description": {
+                        "type": "static",
+                        "text": "[LAST_CHOICE]! Looks tasty!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Next",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                },
+                {
+                    "title": "Cook!",
+                    "description": {
+                        "type": "static",
+                        "text": "Chop up some..."
+                    },
+                    "choices": {
+                        "type": "random",
+                        "selection": [
+                            "Apple",
+                            "Banana",
+                            "Egg",
+                            "Plum",
+                            "Salt",
+                            "Pepper"
+                        ]
+                    }
+                },
+                {
+                    "title": "Cook!",
+                    "description": {
+                        "type": "static",
+                        "text": "[LAST_CHOICE]! What a great combination!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Next",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                },
+                {
+                    "title": "Cook!",
+                    "description": {
+                        "type": "static",
+                        "text": "Add a dash of..."
+                    },
+                    "choices": {
+                        "type": "random",
+                        "selection": [
+                            "Sand",
+                            "Dirt",
+                            "Grass",
+                            "Sticks",
+                            "Mud",
+                            "Hair",
+                            "Leaves"
+                        ]
+                    }
+                },
+                {
+                    "title": "Done!",
+                    "description": {
+                        "type": "static",
+                        "text": "In a finishing touch, you stir in the [LAST_CHOICE]."
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Next",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Restaurant Outro",
+            "scenes": [
+                {
+                    "title": "Customer:",
+                    "description": {
+                        "type": "static",
+                        "text": "This is the worst thing I've ever eaten!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Bork",
+                            "B": "Wag",
+                            "C": "Push",
+                            "D": "Smell"
+                        }
+                    }
+                },
+                {
+                    "title": "Manager:",
+                    "description": {
+                        "type": "static",
+                        "text": "Sven! I never really hired you, but..."
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Next",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                },
+                {
+                    "title": "Manager:",
+                    "description": {
+                        "type": "static",
+                        "text": "You're fired!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Leave",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                }
+            ]
+        }]
+    },
+    {
+        "name": "Cutscene 3",
+        "rounds": [
+            {
+                "name": "Bus",
+                "scenes": [{
+                    "title": "Moving!",
+                    "description": {
+                        "type": "static",
+                        "text": "You get on the bus again! The next stop is the court."
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Ride",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                },
+                {
+                    "title": "Ejection!",
+                    "description": {
+                        "type": "static",
+                        "text": "Don't lick the seats!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Next",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                }
+            ]}
+        ]
+    },
+    {
+        "name": "Court",
+        "rounds": [
+            {
+                "name": "Court Intro",
+                "scenes": [
+                    {
+                        "title": "Man:",
+                        "description": {
+                            "type": "static",
+                            "text": "Help! My lawyer didn't show up!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Man:",
+                        "description": {
+                            "type": "static",
+                            "text": "You'll represent me? Okay!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Start",
                                 "B": null,
                                 "C": null,
                                 "D": null
@@ -403,9 +1360,352 @@ var gameScript = {
                         }
                     }
                 ]
+            },
+            {
+                "name": "Court Game",
+                "scenes": [
+                    {
+                        "title": "Judge:",
+                        "description": {
+                            "type": "static",
+                            "text": "Why is your lawyer a dog?"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Man:",
+                        "description": {
+                            "type": "static",
+                            "text": "My lawyer is not a dog!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Judge:",
+                        "description": {
+                            "type": "static",
+                            "text": "Fair enough. I can see that now."
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Judge:",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["Where were you on"],
+                                ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                                ["15th", "1st", "21st", "17th", "22nd", "3rd"],
+                                ["at"],
+                                ["2pm?", "1am?", "3:23am?", "4:12am?", "10pm?"]
+                            ]
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Opposition:",
+                        "description": {
+                            "type": "static",
+                            "text": "[LAST_CHOICE]? A likely story!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Tension!",
+                        "description": {
+                            "type": "static",
+                            "text": "The jury murmurs intensely."
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Opposition:",
+                        "description": {
+                            "type": "static",
+                            "text": "Quit murmuring already! I'm calling a witness!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Witness:",
+                        "description": {
+                            "type": "random",
+                            "text": [
+                                ["Impossible! I saw you at"],
+                                ["the pub", "maccas", "costa", "the pet store", "sainos", "tescos", "my house"],
+                                ["doing crimes!"]
+                            ]
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Judge:",
+                        "description": {
+                            "type": "static",
+                            "text": "Explain yourself!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Alibi!",
+                        "description": {
+                            "type": "static",
+                            "text": "Quick! What's your alibi?"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Bork",
+                                "B": "Wag",
+                                "C": "Push",
+                                "D": "Smell"
+                            }
+                        }
+                    },
+                    {
+                        "title": "Judge:",
+                        "description": {
+                            "type": "static",
+                            "text": "Huh... but is the jury convinced?"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Jury!",
+                        "description": {
+                            "type": "static",
+                            "text": "The jury murmurs intensely."
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Jury:",
+                        "description": {
+                            "type": "static",
+                            "text": "Not guilty!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Next",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                    {
+                        "title": "Judge:",
+                        "description": {
+                            "type": "static",
+                            "text": "Now get out of my court!"
+                        },
+                        "choices": {
+                            "type": "static",
+                            "selection": {
+                                "A": "Leave",
+                                "B": null,
+                                "C": null,
+                                "D": null
+                            }
+                        }
+                    },
+                ]
             }
         ]
-    }]
+    },
+    {
+        "name": "Cutscene 4",
+        "rounds": [
+            {
+                "name": "Bus",
+                "scenes": [{
+                    "title": "Moving!",
+                    "description": {
+                        "type": "static",
+                        "text": "You get on the bus again! The next stop is your home again."
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Ride",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                },
+                {
+                    "title": "Ejection!",
+                    "description": {
+                        "type": "static",
+                        "text": "Don't sit on other passengers!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Next",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                },
+                {
+                    "title": "Home...",
+                    "description": {
+                        "type": "static",
+                        "text": "You go up to the door. Someone is inside now..."
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Bork",
+                            "B": "Wag",
+                            "C": "Push",
+                            "D": "Smell"
+                        }
+                    }
+                },
+                {
+                    "title": "Home!",
+                    "description": {
+                        "type": "static",
+                        "text": "The person inside notices your [LAST_CHOICE] through the door!"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Bork",
+                            "B": "Wag",
+                            "C": "Push",
+                            "D": "Smell"
+                        }
+                    }
+                },
+                {
+                    "title": "Person:",
+                    "description": {
+                        "type": "static",
+                        "text": "Sven! How did you get outside?"
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "Bork",
+                            "B": "Wag",
+                            "C": "Push",
+                            "D": "Smell"
+                        }
+                    }
+                },
+                {
+                    "title": "Person:",
+                    "description": {
+                        "type": "static",
+                        "text": "Well, at least it looks like you didn't get up to much..."
+                    },
+                    "choices": {
+                        "type": "static",
+                        "selection": {
+                            "A": "End",
+                            "B": null,
+                            "C": null,
+                            "D": null
+                        }
+                    }
+                }
+            ]}
+        ]
+    },]
 };
 
 /*
