@@ -1,17 +1,23 @@
 #content {
+    font-size: 5vmin;
     padding: 2px 0;
     text-align: center;
-    font-size: 5vw;
+    font-family: 'Courier New', monospace;
 }
 
-#game-container {
+h1 {
+    font-size: 1em;
+    margin: 0;
+}
+
+.main {
     display: inline-block;
     text-align: left;
     width: 10em;
-    font-family: 'Courier New', monospace;
     outline-color: black;
     outline-style: solid;
     outline-width: 2px;
+    margin-bottom: 1em;
 }
 
 #image-container img {
@@ -43,12 +49,12 @@
 }
 
 #controller button {
+    font-family: 'Courier New', monospace;
     width: 50%;
     margin: 0%;
     float: left;
     line-height: 1.6em;
     font-size: 1em;
-    font-family: 'Courier New', monospace;
     outline-color: black;
     outline-style: solid;
     outline-width: 2px;
@@ -72,8 +78,8 @@
 }
 
 
-/** {
+* {
     outline-color: red;
     outline-style: dashed;
     outline-width: 1px;
-}*/
+}
