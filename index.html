@@ -12,38 +12,57 @@
 </head>
 
 <body>
-    <div id="content">
-        <h1 class="caps">
-            Adsventure Game
-        </h1>
-        <div id="game-container" class="main">
-            <div id="image-container">
-                <img src="media/sven.png" />
-            </div>
-            <div id="text-container">
-                <div id="text-title" class="caps">
+    <div id="all-container">
+        <div id="content">
+            <h1 class="caps">
+                Adsventure Game
+            </h1>
+            <div id="game-container" class="main" aria-live="polite" aria-atomic="true">
+                <div id="image-container">
+                    <img id="game-image" src="img/titlecard.png" />
                 </div>
-                <div id="text-description">
+                <div id="text-container">
+                    <div id="text-title" class="caps">
+                    </div>
+                    <div id="text-description">
+                    </div>
+                </div>
+                <div id="controller">
+                    <button class="caps" type="button" id="button-A">
+                    </button>
+                    <button class="caps" type="button" id="button-B">
+                    </button>
+                    <button class="caps" type="button" id="button-C">
+                    </button>
+                    <button class="caps" type="button" id="button-D">
+                    </button>
                 </div>
             </div>
-            <div id="controller" class="caps">
-                <button type="button" id="button-A">
-                </button>
-                <button type="button" id="button-B">
-                </button>
-                <button type="button" id="button-C">
-                </button>
-                <button type="button" id="button-D">
-                </button>
+            <div id="help-container" class="main">
+                <details>
+                    <summary>What is this?</summary>
+                    <p>
+    Adsventure Game is an interactive fiction about a dog named Sven who does a lot of jobs badly.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>Sven?</summary>
+                    <p>
+                        <span class="caps">SVEN!</span>
+                        <img alt="Photo of Sven, best dog and a definite good boy." src="img/svenphoto.png"/>
+                    </p>
+                </details>
+                <details>
+                    <summary>Options</summary>
+                    <p>
+                        <form>
+                            <label for="caps">Turn caps-lock off.</label>
+                            <input id="caps" type="checkbox"/>
+                        </form>
+                    </p>
+                </details>
             </div>
-        </div>
-        <div id="help-container" class="main">
-            <details>
-                <summary>About the Game</summary>
-                <p>
-Adsventure Game is a game (well, more of an interactive fiction story) where you play as a dog named Sven, performing a lot of jobs... badly.
-                </p>
-            </details>
         </div>
     </div>
 </body>

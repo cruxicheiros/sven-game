@@ -1,8 +1,15 @@
+#all-container {
+ width: 100%;
+ text-align: center;
+}
+
 #content {
-    font-size: 5vmin;
+    display: inline-block;
+    font-size: calc(12px + 2.5vmin);
     padding: 2px 0;
-    text-align: center;
     font-family: 'Courier New', monospace;
+    max-width: 10em;
+    max-height: 100vh;
 }
 
 h1 {
@@ -20,9 +27,16 @@ h1 {
     margin-bottom: 1em;
 }
 
-#image-container img {
-    height: 6em;
+#image-container {
+    text-align: center;
 }
+
+#game-image {
+    height: 6em;
+    max-width: 10em;
+    display: inline-block;
+}
+
 
 #text-container {
     padding-left: 0.1em;
@@ -34,6 +48,16 @@ h1 {
     /* 3x1.6 (line height) */
     hyphens: 1;
     font-size: 0.8em;
+}
+
+details{
+    line-height: 1.6em;
+    hyphens: 1;
+    font-size: 0.8em;
+}
+
+details img {
+    max-width: 9em;
 }
 
 .caps {
@@ -78,8 +102,8 @@ h1 {
 }
 
 
-* {
+/** {
     outline-color: red;
     outline-style: dashed;
     outline-width: 1px;
-}
+}*/

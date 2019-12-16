@@ -4,7 +4,8 @@ function game() {
     var views = {
         button: new ButtonView(),
         title: new TitleView(),
-        description: new DescriptionView()
+        description: new DescriptionView(),
+        image: new ImageView()
     }
 
     var presenter = new Presenter(model, views);
@@ -25,6 +26,7 @@ var Model = function(script) {
 
             title: null,
             description: null,
+            image: "titleCard",
             choices: {
                 A: null,
                 B: null,
@@ -43,6 +45,10 @@ var Model = function(script) {
 
         getDescription: function() {
             return this._state.description;
+        },
+
+        getImage: function() {
+            return this._state.image;
         },
 
         getChoices: function() {
@@ -106,6 +112,14 @@ var Model = function(script) {
             throw new Error("Invalid description type " + description.type + " at text '" + description.text + "'");
         },
 
+        _renderImage: function() {
+            var sceneData = this._getSceneData();
+            
+            if ("image" in sceneData) {
+                this._state.image = sceneData["image"];
+            }
+        },
+
         _renderChoices: function() {
             var choices = this._getSceneData()["choices"];
 
@@ -149,6 +163,7 @@ var Model = function(script) {
         render: function() {
             this._renderTitle();
             this._renderDescription();
+            this._renderImage();
             this._renderChoices();
         },
 
@@ -178,6 +193,7 @@ var Presenter = function(model, views) {
         updateScene: function() {
             this.setTitle(this._model.getTitle());
             this.setDescription(this._model.getDescription());
+            this.setImage(this._model.getImage());
             this.setButtons(this._model.getChoices());
         },
 
@@ -187,6 +203,10 @@ var Presenter = function(model, views) {
 
         setDescription: function(description) {
             this._views['description'].setDescription(description);
+        },
+
+        setImage: function(image){
+            this._views['image'].setImage(image);
         },
 
         setButtons: function(choices) {
@@ -227,6 +247,17 @@ var DescriptionView = function() {
         setDescription: function(description) {
             description = description.replace(this._capsRegex, this._capsReplacer)
             document.getElementById(this._DESCRIPTION_ID).innerHTML = description;
+        }
+    }
+}
+
+var ImageView = function() {
+    return {
+        _IMAGE_ID: "game-image",
+        _imagePaths: images,
+
+        setImage: function(image) {
+            document.getElementById(this._IMAGE_ID).src = this._imagePaths[image];
         }
     }
 }
@@ -286,6 +317,19 @@ var ButtonView = function() {
     }
 }
 
+/* Game image paths */
+
+var images = {
+    "titleCard": "img/titlecard.png",
+    "drSven": "img/drsven.png",
+    "house": "img/house.png",
+    "lawSven": "img/lawsven.png",
+    "ejected": "img/nosven.png",
+    "bus": "img/svenbus.png",
+    "theEnd": "img/theend.png",
+    "chefSven": "img/chefsven.png"
+}
+
 /* Script JSON */
 
 var gameScript = {
@@ -309,7 +353,8 @@ var gameScript = {
                                 "C": null,
                                 "D": null
                             }
-                        }
+                        },
+                        "image": "titleCard"
                     }]
                 }
             ]
@@ -333,7 +378,8 @@ var gameScript = {
                                 "C": null,
                                 "D": null
                             }
-                        }
+                        },
+                        "image": "house"
                     },
                     {
                         "title": "Confused!",
@@ -384,7 +430,8 @@ var gameScript = {
                                 "C": null,
                                 "D": null
                             }
-                        }
+                        },
+                        "image": "bus"
                     },
                     {
                         "title": "Ejection!",
@@ -400,7 +447,8 @@ var gameScript = {
                                 "C": null,
                                 "D": null
                             }
-                        }
+                        },
+                        "image": "ejected"
                     }
                 ]}
             ]
@@ -423,7 +471,8 @@ var gameScript = {
                                 "C": "Push",
                                 "D": "Smell"
                             }
-                        }
+                        },
+                        "image": "drSven"
                     },
                     {
                         "title": "Doctor:",
@@ -1017,7 +1066,8 @@ var gameScript = {
                             "C": null,
                             "D": null
                         }
-                    }
+                    },
+                    "image": "bus"
                 },
                 {
                     "title": "Ejection!",
@@ -1033,7 +1083,8 @@ var gameScript = {
                             "C": null,
                             "D": null
                         }
-                    }
+                    },
+                    "image": "ejected"
                 }
             ]}
         ]
@@ -1057,7 +1108,8 @@ var gameScript = {
                             "C": "Push",
                             "D": "Smell"
                         }
-                    }
+                    },
+                    "image": "chefSven"
                 },
                 {
                     "title": "Manager:",
@@ -1276,7 +1328,8 @@ var gameScript = {
                             "C": null,
                             "D": null
                         }
-                    }
+                    },
+                    "image": "ejected"
                 }
             ]
         }]
@@ -1300,7 +1353,8 @@ var gameScript = {
                             "C": null,
                             "D": null
                         }
-                    }
+                    },
+                    "image": "bus"
                 },
                 {
                     "title": "Ejection!",
@@ -1316,7 +1370,8 @@ var gameScript = {
                             "C": null,
                             "D": null
                         }
-                    }
+                    },
+                    "image": "ejected"
                 }
             ]}
         ]
@@ -1341,7 +1396,8 @@ var gameScript = {
                                 "C": "Push",
                                 "D": "Smell"
                             }
-                        }
+                        },
+                        "image": "lawSven"
                     },
                     {
                         "title": "Man:",
@@ -1596,7 +1652,8 @@ var gameScript = {
                                 "C": null,
                                 "D": null
                             }
-                        }
+                        },
+                        "image": "ejected"
                     },
                 ]
             }
@@ -1621,7 +1678,8 @@ var gameScript = {
                             "C": null,
                             "D": null
                         }
-                    }
+                    },
+                    "image": "bus"
                 },
                 {
                     "title": "Ejection!",
@@ -1637,7 +1695,8 @@ var gameScript = {
                             "C": null,
                             "D": null
                         }
-                    }
+                    },
+                    "image": "ejected"
                 },
                 {
                     "title": "Home...",
@@ -1653,7 +1712,8 @@ var gameScript = {
                             "C": "Push",
                             "D": "Smell"
                         }
-                    }
+                    },
+                    "image": "theEnd"
                 },
                 {
                     "title": "Home!",
