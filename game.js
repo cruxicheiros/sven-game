@@ -1,4 +1,9 @@
+var capsDisabled = false;
+
 function game() {
+    enableCapsControl();
+    detectInputType();
+
     var model = new Model(gameScript);
 
     var views = {
@@ -211,6 +216,7 @@ var Presenter = function(model, views) {
 
         setButtons: function(choices) {
             this._views['button'].setButtonLabels(choices);
+            this._views['button'].focusFirstButton();
         },
 
         buttonClickListener: function(buttonCode) {
@@ -241,6 +247,10 @@ var DescriptionView = function() {
         _capsRegex: /(\*)(.*?)\1/g,
 
         _capsReplacer: function(fullMatch, tagStart, tagContents){
+            if (capsDisabled) {  // capsDisabled is global. 
+                return '<span class="caps-disabled">' + tagContents + '</span>';
+            }
+
             return '<span class="caps">'+ tagContents + '</span>';
         },
 
@@ -299,6 +309,10 @@ var ButtonView = function() {
                     return;
                 }
             }
+        },
+        
+        focusFirstButton: function() {
+            this._buttons[0].htmlElement.focus();
         },
 
         setButtonLabels: function(buttonLabels) {
@@ -1821,5 +1835,44 @@ if (!Array.prototype.includes) {
             // 8. Return false
             return false;
         }
+    });
+}
+
+/*
+ UI CSS manipulation
+*/
+
+// Allow caps lock to be turned on and off (helps legibility for some)
+function enableCapsControl() {
+        document.getElementById("caps-control").checked = false;
+
+        document.getElementById("caps-control").addEventListener("click", function(e) {
+             capsDisabled = e.target.checked;
+             var capsElems;
+             
+             if (capsDisabled) {
+                 capsElems = document.getElementsByClassName("caps");
+                 
+                 for (i = capsElems.length - 1; i >= 0; i--) {
+                     capsElems[i].className = "caps-disabled";
+                 }
+             } else {
+                 capsElems = document.getElementsByClassName("caps-disabled");
+                 
+                 for (i = capsElems.length - 1; i >= 0; i--) {
+                     capsElems[i].className = "caps";
+                 }
+             }
+        }
+    );
+}
+
+function detectInputType() {  // Thanks https://stackoverflow.com/a/51093815!
+    document.body.addEventListener('mousedown', function() {
+        document.body.classList.add('using-mouse');
+    });
+
+    document.body.addEventListener('keydown', function() {
+        document.body.classList.remove('using-mouse');
     });
 }

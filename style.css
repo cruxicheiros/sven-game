@@ -96,6 +96,11 @@ details img {
     color: white;
 }
 
+body.using-mouse #controller button:focus {
+    background-color: white;
+    color: black;
+}
+
 #controller button:disabled {
     background-color: white;
     color: lightgray;
